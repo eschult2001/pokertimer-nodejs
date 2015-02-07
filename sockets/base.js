@@ -7,6 +7,8 @@ module.exports = function (io) {
 
   io.on('connection', function (socket) {
 
+    console.log('a user connected');
+
     socket.on('join', function (msg) {
       console.log('recieved join message ', JSON.stringify(msg));
       if (socket.currentRoom) {
@@ -148,7 +150,7 @@ function broadcast(id) {
 }
 
 setInterval(function() {
-      console.log("in setInterval()");
+       //console.log("in setInterval()");
        var stati = statusService.listStatus();
        for(var i=0; i<stati.length; i++) {
          var state = stati[i];
@@ -163,3 +165,4 @@ setInterval(function() {
          }
        }
     }, 1000);
+
