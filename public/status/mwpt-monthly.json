@@ -1,0 +1,11 @@
+{	
+	"id":"mwpt-monthly",
+	"currentPlayers": 16,
+	"currentLevel": 1,
+	"currentTime": 900,
+	"totalPlayers": 16,
+	"initialStack": 17500,
+	"avgStack": 17500,
+	"totalChips": 280000,
+	"running": true
+}

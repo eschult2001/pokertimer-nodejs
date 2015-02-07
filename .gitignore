@@ -26,3 +26,5 @@ node_modules
 
 # Users Environment Variables
 .lock-wscript
+# Bower target install. no need to check in 
+public/components

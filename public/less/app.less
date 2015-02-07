@@ -1,0 +1,240 @@
+/* app css stylesheet */
+
+@foreground: #666;
+@background: #444;
+@red: #b20000;
+@yellow: #ffff26;
+@green: #2DB200;
+@white: #ffffff;
+@clock-running-bg: @green;
+@clock-running-fg: @white;
+@clock-stopped-bg: @red;
+@clock-stopped-fg: @white;
+@clock-warning-bg: @white;
+@clock-warning-fg: @red;
+@active-blinds-fg: @yellow;
+@last-blinds-fg: #666;
+@next-blinds-fg: #999;
+@player-area-fg: @next-blinds-fg;
+@player-area-bg: #111;
+@clockHeight: 277px;
+
+
+
+#sp-nav {
+	background: @background;
+	padding: 10px;
+	> label {
+		margin-top: 15px; 
+		color: @white;
+	}
+	> input {
+		font-size: larger;
+	}
+}
+
+.timerView {
+	line-height: 24px;
+	color: @foreground;
+	background-color: @background;
+
+	.container-fluid {
+		margin: 0px;
+	}
+
+	.container {
+		width: 1280px;
+		height: 1024px;
+		margin: 0px;
+	}
+
+	button {
+		font: bold 20px verdana;
+		color: #999;
+		background: #666;
+		text-align: right;
+		border: none;
+	}
+
+	.logo-area {
+		@logopadding: 10px;
+		height: 58px + (@logopadding * 2);
+		> .logo {
+			height: 58px;
+			margin-top: @logopadding;
+			margin-left: @logopadding;
+		}
+	}
+
+	#clock-area {
+		height: @clockHeight;
+	}
+
+	.clock-running {
+		.clock-state (@fgcolor: @clock-running-fg;
+		@bgcolor: @clock-running-bg;
+		@buttonText: "Running");
+	}
+
+	.clock-stopped {
+		.clock-state (@fgcolor: @clock-stopped-fg;
+		@bgcolor: @clock-stopped-bg;
+		@buttonText: "Paused");
+	}
+
+	.clock-warning {
+		.clock-state (@fgcolor: @clock-warning-fg;
+		@bgcolor: @clock-warning-bg;
+		@buttonText: "Running");
+	}
+
+	.blind-area {
+		font: bold 70px verdana;
+		height: 101px;
+	}
+
+	#active-blinds {
+		.blind-area ();
+		color: @active-blinds-fg;
+		> button {
+			color: @active-blinds-fg;
+			height: 101px;
+			background-color: fadeout(@active-blinds-fg, 50%);
+		}
+	}
+
+	#last-blinds {
+		.blind-area ();
+		color: @last-blinds-fg;
+		> button {
+			color: @last-blinds-fg;
+			height: 101px;
+			background-color: fadeout(@last-blinds-fg, 50%);
+		}
+	}
+
+	#next-blinds {
+		.blind-area ();
+		color: @next-blinds-fg;
+		> button {
+			color: @next-blinds-fg;
+			height: 101px;
+			background-color: fadeout(@next-blinds-fg, 50%);
+		}
+	}
+
+	#menuToggle {
+		> button {
+			font-size: 30px;
+			margin-top: 15px;
+		}
+	}
+
+	.player-area {
+		height: 50px;
+		@media screen {
+			font: bold 15px verdana;
+			@media (min-width:768px) {
+				font: bold 35px verdana;
+			}
+		}
+		color: @player-area-fg;
+		background: @player-area-bg;
+		> button {
+			color: @player-area-fg;
+			height: 50px;
+			@media screen {
+				font: bold 10px verdana;
+				@media (min-width:768px) {
+					font: bold 20px verdana;
+				}
+			}
+			background-color: fadeout(@player-area-fg, 50%);
+		}
+	}
+
+	blind-level {
+		display: block;
+		width: 100%;
+
+	}
+
+	.clock-state (@fgcolor;
+	@bgcolor;
+	@buttonText) {
+		@lighter: lighten(@bgcolor, 15%);
+		@darker: darken(@bgcolor, 15%);
+		.clock {
+			height: @clockHeight;
+			font: bold 225px verdana;
+			color: @fgcolor;
+			.background-gradient (@lighter; @bgcolor; @bgcolor; @bgcolor; @bgcolor; @bgcolor; @darker);
+		}
+
+		button {
+			height: @clockHeight;
+			color: @darker;
+			background-color: @lighter;
+		}
+
+		> button:before {
+			content: @buttonText;
+		}
+	}
+
+	.rotate {
+		/* Safari */
+		-webkit-transform: rotate(-90deg);
+
+		/* Firefox */
+		-moz-transform: rotate(-90deg);
+
+		/* IE */
+		-ms-transform: rotate(-90deg);
+
+		/* Opera */
+		-o-transform: rotate(-90deg);
+
+		/* Internet Explorer */
+		filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+	}
+
+
+// ==========================================================================
+//   Useful Mixins
+// ==========================================================================
+
+	.background-gradient (@c1;@c2;@c3;@c4;@c5;@6;@7) {
+		background: -webkit-linear-gradient(@c1, @c2, @c3, @c4, @c5, @6, @7);
+		background: -o-linear-gradient(@c1, @c2, @c3, @c4,@c5, @6, @7);
+		background: -moz-linear-gradient(@c1, @c2, @c3, @c4,@c5, @6, @7);
+		background: linear-gradient(@c1, @c2, @c3, @c4,@c5, @6, @7);
+	}
+	.background-gradient (@c1;@c2;@c3;@c4;@c5) {
+		background: -webkit-linear-gradient(@c1, @c2, @c3, @c4,@c5);
+		background: -o-linear-gradient(@c1, @c2, @c3, @c4,@c5);
+		background: -moz-linear-gradient(@c1, @c2, @c3, @c4,@c5);
+		background: linear-gradient(@c1, @c2, @c3, @c4,@c5);
+	}
+	.background-gradient (@c1;@c2;@c3;@c4) {
+		background: -webkit-linear-gradient(@c1, @c2, @c3, @c4);
+		background: -o-linear-gradient(@c1, @c2, @c3, @c4);
+		background: -moz-linear-gradient(@c1, @c2, @c3, @c4);
+		background: linear-gradient(@c1, @c2, @c3, @c4);
+	}
+	.background-gradient (@c1;@c2;@c3) {
+		background: -webkit-linear-gradient(@c1, @c2, @c3);
+		background: -o-linear-gradient(@c1, @c2, @c3);
+		background: -moz-linear-gradient(@c1, @c2, @c3);
+		background: linear-gradient(@c1, @c2, @c3);
+	}
+
+	.background-gradient (@c1;
+	@c2) {
+		background: -webkit-linear-gradient(@c1, @c2);
+		background: -o-linear-gradient(@c1, @c2);
+		background: -moz-linear-gradient(@c1, @c2);
+		background: linear-gradient(@c1, @c2);
+	}
+}
+

@@ -1,0 +1,49 @@
+<div id="sp-nav">
+	<!-- put your menu in here -->
+	<label for="deltCP">Current Players</label>
+	<input id="deltCp" type="number" ng-model="status.currentPlayers" ng-blur="sendState()">
+	
+	<label for="deltTP">Max Players</label>
+	<input id="deltTP" type="number" ng-model="status.totalPlayers" ng-blur="sendState()">
+	
+	<label for="deltIS">Initial Stack</label>
+	<input id="deltIS" type="number" ng-model="status.initialStack" ng-blur="sendState()">
+	
+	<label for="deltTime">Time (seconds)</label>
+	<input id="deltTime" type="number" ng-model="status.currentTime" ng-blur="sendState()">
+</div>
+
+<div id="sp-page">
+<!-- put your page content in here -->
+
+<div id="timerDetailView" class="timerView container-fluid">
+	<div class="row logo-area">
+		<div id="menuToggle" class="col-xs-1">
+			<button ng-click="$spMenu.toggle()">&#9776;</button>
+		</div>
+		<div class="col-xs-11">
+			<img data-ng-src="{{timer.headerImg}}"/>
+		</div>
+	</div>
+
+	<div id="clockArea" class="row"
+		data-ng-class="{'clock-running':isRunning, 'clock-stopped':!isRunning, 'clock-warning':isWarning}">
+		<button class="col-xs-1 rotate" data-ng-click="toggleClock()"></button>
+		<div class="col-xs-11 clock" data-ng-bind="clock"></div>
+	</div>
+
+	<div id="last-blinds"   class="row" blind-level level="lastLevel"   title="last" click="backup()"></div>
+	<div id="active-blinds" class="row" blind-level level="activeLevel" title="blinds"></div>
+	<div id="next-blinds"   class="row" blind-level level="nextLevel"   title="next" click="advance()"></div>
+
+	<div class="row player-area">
+		<button class="col-xs-1">players</button>
+		<div class="col-xs-2">{{status.currentPlayers|number:0}}&nbsp;of&nbsp;{{status.totalPlayers|number:0}}</div>
+		<button class="col-xs-1">avg<br />stack</button>
+		<div class="col-xs-3" data-ng-bind="avgStack|number:0">&nbsp;</div>
+		<button class="col-xs-1 button">total<br />chips</button>
+		<div class="col-xs-4" data-ng-bind="totalChips|number:0">&nbsp;</div>
+	</div>
+
+</div>
+</div>
