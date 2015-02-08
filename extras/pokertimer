@@ -1,0 +1,22 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:             nodejs pokertimer
+# Required-Start:       $remote_fs $syslog
+# Required-Stop:        $remote_fs $syslog
+# Default-Start:        2 3 4 5
+# Default-Stop: 
+# Short-Description:    NodeJS pokertimer app
+### END INIT INFO
+
+case "$1" in
+    start|stop|restart)
+      su -l ubuntu -c "cd /home/ubuntu/pokertimer-nodejs ; grunt forever:pokertimer:$1"
+    ;;
+
+    *)
+        echo $1 {start|stop|restart}
+        exit 1
+    ;;
+esac
+

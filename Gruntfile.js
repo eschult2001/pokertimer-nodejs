@@ -11,6 +11,7 @@ module.exports = function (grunt) {
   var reloadPort = 35729, files;
 
   grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks('grunt-forever');
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
@@ -42,6 +43,14 @@ module.exports = function (grunt) {
       jade: {
         files: ['app/views/**/*.jade'],
         options: { livereload: reloadPort }
+      }
+    },
+    forever: {
+      pokertimer: {
+        options: {
+          index: 'app.js',
+          logdir: 'log'
+        }
       }
     },
     less: {
