@@ -1,13 +1,32 @@
 
-var tmpio = null;
-module.exports = function (io) {
+
+module.exports = function (io,passport) {
   'use strict';
 
-  tmpio = io;
+  var statusService = require('../app/statusService');
+ 
+/*  io.set('authorization', function (data, accept) {
+      // check if there's a cookie header
+      if (data.headers.cookie) {
+          // if there is, parse the cookie
+          data.cookie = parseCookie(data.headers.cookie);
+          // note that you will need to use the same key to grad the
+          // session id, as you specified in the Express setup.
+          data.sessionID = data.cookie['express.sid'];
+      } else {
+         // if there isn't, turn down the connection with a message
+         // and leave the function.
+         return accept('No cookie transmitted.', false);
+      }
+      // accept the incoming connection
+      accept(null, true);
+  });
+*/
 
   io.on('connection', function (socket) {
 
-    console.log('a user connected');
+    //console.log('a user connected');
+    //console.dir(socket.request, {colors: true, depth: 2});
 
     socket.on('join', function (msg) {
       console.log('recieved join message ', JSON.stringify(msg));
@@ -31,35 +50,6 @@ module.exports = function (io) {
       console.log("getTimersReply " + reply);
       socket.emit("getTimersReply", reply);
     });
-
-    var withStatus = function(cb) {
-      var id = socket.currentRoom;
-      console.log("current room ",id);
-      if (id) {
-          var timer = statusService.findTournamentById(id);
-          var status = statusService.findStatusById(id);
-          if (timer && status) {
-            var doBroadcast = cb(timer,status);
-            validateStatus(status);
-            if (doBroadcast) {
-              broadcast(id);
-            }
-          }
-        }
-      }
-
-    var validateStatus = function(status) {
-      // totalPlayers >= 0
-      status.totalPlayers = Math.max(status.totalPlayers, 0);
-      // currentPlayers >= 0
-      status.currentPlayers = Math.max(status.currentPlayers, 0);
-      // currentPlayers <= totalPlayers
-      status.currentPlayers = Math.min(status.currentPlayers, status.totalPlayers);
-      // currentLevel >= 0
-      status.currentLevel = Math.max(status.currentLevel,0);
-      // initialStack >= 0
-      status.initialStack = Math.max(status.initialStack,0);
-    }
 
     socket.on('advance', function(msg) {
       console.log('recieved advance message ', JSON.stringify(msg));
@@ -125,31 +115,58 @@ module.exports = function (io) {
       });
     });
 
+    var withStatus = function(cb) {
+      var id = socket.currentRoom;
+      console.log("current room ",id);
+      if (id) {
+          var timer = statusService.findTournamentById(id);
+          var status = statusService.findStatusById(id);
+          if (timer && status) {
+            var doBroadcast = cb(timer,status);
+            validateStatus(status);
+            if (doBroadcast) {
+              broadcast(id);
+            }
+          }
+        }
+      }
 
   });
-};
 
-var statusService = require('../app/statusService');
 
-function doAdvance(timer,status){
-        if (status.currentLevel < (timer.levels.length-1)) {
-          status.currentLevel++;
-        }
+  function validateStatus(status) {
+    // totalPlayers >= 0
+    status.totalPlayers = Math.max(status.totalPlayers, 0);
+    // currentPlayers >= 0
+    status.currentPlayers = Math.max(status.currentPlayers, 0);
+    // currentPlayers <= totalPlayers
+    status.currentPlayers = Math.min(status.currentPlayers, status.totalPlayers);
+    // currentLevel >= 0
+    status.currentLevel = Math.max(status.currentLevel,0);
+    // initialStack >= 0
+    status.initialStack = Math.max(status.initialStack,0);
+  }
 
-        if (timer.levels[status.currentLevel].break) {
-          status.running = false;
-          status.currentTime = 0;
-        } else {
-          status.currentTime = timer.levelSeconds;
-        }
-        return true;
+
+  function doAdvance(timer,status){
+    if (status.currentLevel < (timer.levels.length-1)) {
+      status.currentLevel++;
     }
 
-function broadcast(id) {
-  tmpio.sockets.in(id).emit('statusUpdate', statusService.findStatusById(id));
-}
+    if (timer.levels[status.currentLevel].break) {
+      status.running = false;
+      status.currentTime = 0;
+    } else {
+      status.currentTime = timer.levelSeconds;
+    }
+    return true;
+  }
 
-setInterval(function() {
+  function broadcast(id) {
+    io.sockets.in(id).emit('statusUpdate', statusService.findStatusById(id));
+  }
+
+  setInterval(function() {
        //console.log("in setInterval()");
        var stati = statusService.listStatus();
        for(var i=0; i<stati.length; i++) {
@@ -166,3 +183,4 @@ setInterval(function() {
        }
     }, 1000);
 
+};

@@ -4,7 +4,7 @@ module.exports = function(app) {
 
     var timers = require('./timers');
 	app.get('/timers/:id', timers.findById);
-	app.get('/timers', wines.findAll);
+	app.get('/timers', timers.findAll);
 
 	var status = require('./status');
 	app.get('/status/:id', status.findById);
