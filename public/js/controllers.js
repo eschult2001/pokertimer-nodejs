@@ -8,7 +8,7 @@ pokerTimerControllers.controller('TimerListCtrl', [ '$scope', '$http', 'socket',
 
 	socket.on('getTimersReply', function(data){
 		$scope.$apply(function(){
-			console.log(data);
+			//console.log(data);
 			$scope.timers = data;
 		});
 	});
@@ -28,64 +28,31 @@ pokerTimerControllers.controller('TimerDetailCtrl', [ '$scope', '$routeParams', 
 	};
 
 	socket.on('statusUpdate', function(data) {
-		console.dir("statusUpdate:" , data);
+		//console.dir("statusUpdate:" , data);
 		$scope.$apply(function(){
 			$scope.status = data;
 		});
 	});
 
+	socket.on('tick', function(data) {
+		//console.dir("statusUpdate:" , data);
+		$scope.$apply(function(){
+			$scope.status.currentTime = 0 + data;
+		});
+	});
+
 	socket.on('tournamentUpdate', function(data) {
-		console.dir("tournamentUpdate:" , data);
+		//console.dir("tournamentUpdate:" , data);
 		$scope.$apply(function(){
 			$scope.timer = data;
 		});
 	});
 
 	$scope.status = {
-		"id" : "unset",
-		"currentPlayers" : 1,
-		"currentLevel" : 1,
-		"currentTime" : 100,
-		"totalPlayers" : 16,
-		"initialStack" : 17500,
-		"running" : false
 	};
-	
+
 	$scope.timer = {
-		    "id":"mwpt-monthly",
-		    "name": "MWPT Monthly Tournament",
-		    "headerImg": "img/mwpt.png",
-		    "levelSeconds": 900,
-		    "levels":[
-		        {"ante":0, "smallBlind":25,"bigBlind":50},
-		        {"ante":0, "smallBlind":50 ,"bigBlind":100},
-		        {"ante":0, "smallBlind":100 ,"bigBlind":200},
-		        {"ante":25, "smallBlind":100 ,"bigBlind":200},
-		        {"ante":50, "smallBlind":200 ,"bigBlind":400},
-		        {"ante":75, "smallBlind":300 ,"bigBlind":600},
-		        
-		        {"break": true, "label":"Chip-up 25s and 50s"},
-		        
-		        {"ante":100, "smallBlind":400 ,"bigBlind":800},
-		        {"ante":200, "smallBlind":600 ,"bigBlind":1200},
-		        {"ante":300, "smallBlind":800 ,"bigBlind":1600},
-		        {"ante":300, "smallBlind":1000 ,"bigBlind":2000},
-		        
-		        {"break": true, "label":"Chip-up 100s"},
-
-		        {"ante":500, "smallBlind":1500 ,"bigBlind":3000},
-		        {"ante":500, "smallBlind":2000 ,"bigBlind":4000},
-
-		        {"break": true, "label":"Chip-up 500s"},
-
-		        {"ante":1000, "smallBlind":3000 ,"bigBlind":6000},
-		        {"ante":1000, "smallBlind":4000 ,"bigBlind":8000},
-		        {"ante":2000, "smallBlind":6000 ,"bigBlind":12000},
-		        {"ante":3000, "smallBlind":8000 ,"bigBlind":16000},
-		        {"ante":3000, "smallBlind":10000 ,"bigBlind":20000},
-		        {"ante":5000, "smallBlind":15000 ,"bigBlind":30000}
-		    ]
-		};
+	};
 
 	$scope.clockStyle = {};
 	$scope.lastLevel = $scope.activeLevel = $scope.nextLevel = NOLEVEL;
@@ -119,12 +86,12 @@ pokerTimerControllers.controller('TimerDetailCtrl', [ '$scope', '$routeParams', 
 	};
 
 	$scope.startClock = function() {
-		console.log("startClock event");
+		//console.log("startClock event");
 		socket.emit("start");
 	};
 
 	$scope.stopClock = function() {
-		console.log("stopClock event");
+		//console.log("stopClock event");
 		socket.emit("stop");
 	};
 

@@ -8,7 +8,7 @@ module.exports = function(app,passport) {
     // =====================================
     app.get('/', function(req, res) {
         // load the index.ejs file
-        res.render('index.ejs',{ message: req.flash('loginMessage') }); 
+        res.render('index.ejs',{ message: req.flash('loginMessage') });
     });
 
     // =====================================
@@ -17,7 +17,7 @@ module.exports = function(app,passport) {
     // show the login form
     app.get('/login', function(req, res) {
         // render the page and pass in any flash data if it exists
-        res.render('login.ejs', { message: req.flash('loginMessage') }); 
+        res.render('login.ejs', { message: req.flash('loginMessage') });
     });
 
     // process the login form
@@ -71,6 +71,23 @@ module.exports = function(app,passport) {
         })
     );
 
+
+		// =====================================
+    // GOOGLE ROUTES =======================
+    // =====================================
+    // send to google to do the authentication
+    // profile gets us their basic information including their name
+    // email gets their emails
+    app.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
+
+    // the callback after google has authenticated the user
+    app.get('/auth/google/callback',
+        passport.authenticate('google', {
+                successRedirect : '/manager',
+                failureRedirect : '/'
+        }));
+
+
     // =====================================
     // LOGOUT ==============================
     // =====================================
@@ -102,9 +119,9 @@ module.exports = function(app,passport) {
 	        error: err
 	    });
 	  });
-	 
+
 	}
-	 
+
 	// production error handler
 	// no stacktraces leaked to user
 	app.use(function(err, req, res, next) {
@@ -121,11 +138,10 @@ module.exports = function(app,passport) {
 // route middleware to make sure a user is logged in
 function isLoggedIn(req, res, next) {
 
-    // if user is authenticated in the session, carry on 
+    // if user is authenticated in the session, carry on
     if (req.isAuthenticated())
         return next();
 
     // if they aren't redirect them to the home page
     res.redirect('/');
 }
-

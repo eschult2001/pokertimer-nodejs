@@ -4,7 +4,7 @@ module.exports = function (io,passport) {
   'use strict';
 
   var statusService = require('../app/statusService');
- 
+
 /*  io.set('authorization', function (data, accept) {
       // check if there's a cookie header
       if (data.headers.cookie) {
@@ -29,35 +29,35 @@ module.exports = function (io,passport) {
     //console.dir(socket.request, {colors: true, depth: 2});
 
     socket.on('join', function (msg) {
-      console.log('recieved join message ', JSON.stringify(msg));
+      //console.log('recieved join message ', JSON.stringify(msg));
       if (socket.currentRoom) {
         socket.leave(socket.currentRoom);
       }
       var clock = statusService.findStatusById(msg.id);
       var tournament = statusService.findTournamentById(msg.id);
       if (clock && tournament) {
-        console.log("Joining room ", msg.id);
+        //console.log("Joining room ", msg.id);
         socket.currentRoom = msg.id;
         socket.join(msg.id);
-        socket.emit("statusUpdate", clock);
         socket.emit("tournamentUpdate", tournament);
+        socket.emit("statusUpdate", clock);
       }
     });
 
     socket.on('getTimers', function() {
-      console.log('recieved getTimers message');
+      //console.log('recieved getTimers message');
       var reply = statusService.listTournaments();
-      console.log("getTimersReply " + reply);
+      //console.log("getTimersReply " + reply);
       socket.emit("getTimersReply", reply);
     });
 
     socket.on('advance', function(msg) {
-      console.log('recieved advance message ', JSON.stringify(msg));
+      //console.log('recieved advance message ', JSON.stringify(msg));
       withStatus(doAdvance);
     });
 
     socket.on('back', function(msg) {
-      console.log('recieved back message ', JSON.stringify(msg));
+      //console.log('recieved back message ', JSON.stringify(msg));
       withStatus(function(timer,status){
         if (status.currentLevel > 0) {
           status.currentLevel--;
@@ -76,7 +76,7 @@ module.exports = function (io,passport) {
     });
 
     socket.on('start', function(msg){
-      console.log('recieved start message ', JSON.stringify(msg));
+      //console.log('recieved start message ', JSON.stringify(msg));
       withStatus(function(timer,status) {
         if (!status.running) {
           status.running = true;
@@ -88,7 +88,7 @@ module.exports = function (io,passport) {
     });
 
     socket.on('stop', function(msg){
-      console.log('recieved stop message ', JSON.stringify(msg));
+      //console.log('recieved stop message ', JSON.stringify(msg));
       withStatus(function(timer,status) {
         if (status.running) {
           status.running = false;
@@ -100,7 +100,7 @@ module.exports = function (io,passport) {
     });
 
     socket.on('statusUpdate', function(msg){
-      console.log('recieved status message ', JSON.stringify(msg));
+      //console.log('recieved status message ', JSON.stringify(msg));
       withStatus(function(timer,status) {
         if (msg.id === status.id) {
           for (var attrname in msg) {
@@ -117,7 +117,7 @@ module.exports = function (io,passport) {
 
     var withStatus = function(cb) {
       var id = socket.currentRoom;
-      console.log("current room ",id);
+      //console.log("current room ",id);
       if (id) {
           var timer = statusService.findTournamentById(id);
           var status = statusService.findStatusById(id);
@@ -174,11 +174,12 @@ module.exports = function (io,passport) {
          if (state.running) {
            if (state.currentTime > 0 ) {
              state.currentTime--
+             io.sockets.in(state.id).emit('tick', state.currentTime);
            } else {
              var timer = statusService.findTournamentById(state.id);
              doAdvance(timer,state)
+             broadcast(state.id);
            }
-           broadcast(state.id);
          }
        }
     }, 1000);
